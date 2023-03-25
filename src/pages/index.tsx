@@ -1,17 +1,20 @@
-import type { NextPage } from 'next';
-import { Anchor } from '@mantine/core';
+import type { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { UserForm } from '@/features/form2/Form';
 
-const IndexPage: NextPage = () => {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+  const csrfToken = res.getHeader('X-CSRF-Token') || 'missing';
+  return { props: { csrfToken } };
+};
+
+const Home: NextPage<Props> = ({ csrfToken }) => {
   return (
     <>
-      <p>
-        <Anchor href="/page2">page2</Anchor>
-      </p>
-      <p>
-        <Anchor href="/fetch">fetch</Anchor>
-      </p>
+      <p>CSRF token value: {csrfToken}</p>
+      <UserForm csrfToken={csrfToken}></UserForm>
     </>
   );
 };
 
-export default IndexPage;
+export default Home;

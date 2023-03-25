@@ -3,11 +3,11 @@ import { UserFormProvider, useUserForm } from '@/features/form2/UserContext';
 import { NameInput } from '@/features/form2/NameInput';
 import { isNotEmpty, isEmail, isInRange, hasLength, matches } from '@mantine/form';
 
-export const UserForm = () => {
+export const UserForm = (props: { csrfToken: string}) => {
   const form = useUserForm({
     initialValues: {
-      age: 0,
-      name: '',
+      age: 22,
+      name: '山田太郎',
     },
 
     validate: {
@@ -16,8 +16,18 @@ export const UserForm = () => {
     },
   });
 
-  const handleSubmit = () => {
-    console.log(form.values);
+  const handleSubmit = async () => {
+    const response = await fetch('/api/form-handler/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        // csrf_token: 'invalid token'
+        csrf_token: props.csrfToken
+      }),
+    });
+    console.log(await response.json());
   };
 
   return (
